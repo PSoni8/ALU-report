@@ -1,2 +1,2 @@
 # ALU-report
-it is 4 bit ALU.
+It is 4 bit ALU.
