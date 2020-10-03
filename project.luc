@@ -1,0 +1,80 @@
+Module fulladder{sum,c_out,a,b,c_in};
+Output sum,c_out;
+Input a,b,c_in;
+Wire s1,c1,c2;
+Xor(s1,a,b);
+And(c1,a,b);
+Xor(sum,s1,c_in);
+And(c2,s1,cin);
+Xor(c_out,c2,c1);
+Endmodule.
+Module mux4_to_1(out,i0,i1,i2,i3,s1,s0);
+Output out;
+Input i0,i1,i2,i3,s1,s0;
+Wire s1n,s0n;
+Wire y0,y1,y2,y3;
+Not(s1n,s1);
+Not(s0n,s0);
+And(y0,i0,s1n,s0n);
+And(y1,i1,s1n,s0);
+And(y2,i2,s1,s0n);
+And(y3,i3,s1,s0);
+Or(out,y0,y1,y2,y3);
+Endmodule.
+Module A_U{D,cout,A,B,Cin,s0,s1};
+Output cout;
+Output [3:0]D;
+Input [3:0]A,B;
+Input cin,s1,s0;
+Wire y0,z0,c1,c2,c3,y1,y2,y3,z1,z2,z3;
+Int I=0,j=1;
+Not (z0, B[0]);
+Not (z1, B[1]);
+Not (z2,B[2]);
+Not (z3,B[3]);
+Mux4_to_1 M1(y0,B[0],z0,i,j,s1,s0);
+Fulladder A1(D[0],c1,A[0],y0,cin);
+Mux4_to_1 M2(y1, B[1],z1, i,j,s1,s0);
+Fulladder A2(D[1],c2,A[1],y1,c1);
+Mux4_to_1 M3(y2, B[2],z2, i,j,s1,s0);
+Fulladder A3(D[2],c3,A[2],y2,c2);
+Mux4_to_1 M4(y3, B[3],z3, i,j,s1,s0);
+Fulladder A4(D[3],cout,A[3],y3,c3);
+Endmodule.
+Module LU{E,A,B,s1,s0};
+Output E;
+Input A,B,s1,s0;
+Wire i,j,k,l;
+And(i,A,B);
+Or(j,A,B);
+Xor(k,A,B);
+Not(I,A);
+Mux4_to_1 M5(E,I,j,k,l,s1,s0);
+Endmodule.
+Module mux2_to_1{out,i0,i1,s};
+Output out;
+Input i0,i1,s;
+Wire x,y,z;
+Not(x,s);
+And(y,x,i0);
+And(z,s,i1);
+Or(out,y,z);
+Endmodule.
+Module LU4{F,a,b,s1,s0};
+Output [3:0]F;
+Input [3:0]a,b;
+Input s1,s0;
+LU L1(F[0],a[0],b[0],s1,s0);
+LU L2(F[1],a[1],b[1],s1,s0);
+LU L3(F[2],a[2],b[2],s1,s0);
+LU L4(F[3],a[3],b[3],s1,s0);
+Endmodule.
+Module shifter{H,A,ir,il,s};
+Output [3:0]H;
+Input [3:0]A;
+Input ir,il,s;
+Mux2_to_1 X1(H[0],ir,A[1],s);
+Mux2_to_1 X2(H[1],A[0],A[2],s);
+Mux2_to_1 X3(H[2],A[1],A[3],s);
+Mux2_to_1 X4(H[3],A[2],il,s);
+Endmodule
